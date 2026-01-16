@@ -4,6 +4,10 @@
 #include "two_sum.h"
 #include <time.h>
 
+#ifndef BENCHMARK
+#define BENCHMARK 1
+#endif
+
 static double cpu_ms(clock_t start, clock_t end) {
     return 1000.0 * (double)(end - start) / (double)CLOCKS_PER_SEC;
 }
@@ -135,7 +139,13 @@ int main(void) {
         int nums[] = { 0, 4, 3, 0 };
         run_case("zeros", nums, 4, 0, 0, 3);
     }
+
+#if BENCHMARK
     benchmark_two_sum();
+#else
+    printf("\n[Benchmark disabled]\n");
+#endif
+
     // Summary
     if (fail_count == 0) {
         printf("\nALL TESTS PASSED\n");
@@ -145,5 +155,4 @@ int main(void) {
         printf("\n%d TEST(S) FAILED\n", fail_count);
         return 1;
     }
-    
 }

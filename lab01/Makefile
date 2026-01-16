@@ -1,18 +1,30 @@
 CC ?= cc
-CFLAGS = -std=c11 -Wall -Wextra -O2
+CFLAGS = -std=c11 -Wall -Wextra -O2 -I./src
 
-TEST_BIN=bin/test_two_sum
+BIN_DIR = bin
+TARGET  = $(BIN_DIR)/two_sum_run
 
-all: test
+SRC  = src/two_sum.c
+MAIN = tests/test_two_sum.c
 
-test: $(TEST_BIN)
-	./$(TEST_BIN)
+.PHONY: all run run_nobench clean
 
-$(TEST_BIN): src/two_sum.c tests/test_two_sum.c src/two_sum.h
-	mkdir -p bin
-	$(CC) $(CFLAGS) src/two_sum.c tests/test_two_sum.c -o $(TEST_BIN)
+all: $(TARGET)
+
+# Default build: benchmark ON
+$(TARGET): $(SRC) $(MAIN) src/two_sum.h
+	mkdir -p $(BIN_DIR)
+	$(CC) $(CFLAGS) -DBENCHMARK=1 $(SRC) $(MAIN) -o $(TARGET)
+
+# make run -> benchmark ON
+run: $(TARGET)
+	./$(TARGET)
+
+# make run_nobench -> benchmark OFF
+run_nobench:
+	mkdir -p $(BIN_DIR)
+	$(CC) $(CFLAGS) -DBENCHMARK=0 $(SRC) $(MAIN) -o $(TARGET)
+	./$(TARGET)
 
 clean:
-	rm -rf bin
-
-.PHONY: all test clean
+	rm -rf $(BIN_DIR)
