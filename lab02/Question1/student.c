@@ -1,59 +1,50 @@
-// Question1/Student.c
-// ------------------------------------------------------------
-// CS Lab - Valid Parentheses (STACK PRACTICE)
-//
-// Task:
-// Implement `isValid(const char *s)`.
-// Given a string s containing only: () {} []
-// return true if it is a valid parentheses string, else false.
-//
-// Valid rules:
-// 1) Open brackets must be closed by the same type of brackets.
-// 2) Open brackets must be closed in the correct order.
-// 3) Every close bracket has a corresponding open bracket.
-//
-// Examples:
-//   s = "()"        -> true
-//   s = "()[]{}"    -> true
-//   s = "(]"        -> false
-//   s = "([)]"      -> false
-//   s = "{[]}"      -> true
-//   s = ""          -> true   (empty string is valid)
-//
-// How to run tests (from the folder containing the Makefile):
-//   make run1
-// ------------------------------------------------------------
-
 #include "Student.h"
 #include <stdbool.h>
-#include <stddef.h>  // size_t
-#include <string.h>  // strlen
+#include <stdlib.h>
+#include <string.h>
+
+static bool is_open(char c) {
+    return (c == '(' || c == '[' || c == '{');
+}
+
+static bool matches(char open, char close) {
+    return (open == '(' && close == ')') ||
+           (open == '[' && close == ']') ||
+           (open == '{' && close == '}');
+}
 
 bool isValid(const char *s) {
-    // TODO: Implement using a stack.
-    //
-    // Recommended approach:
-    // - Use a char array as a stack to store opening brackets.
-    // - Scan the string from left to right:
-    //   - If you see an opening bracket, push it.
-    //   - If you see a closing bracket:
-    //       * stack must not be empty
-    //       * top of stack must match the closing bracket type
-    //       * then pop
-    // - At the end, stack must be empty.
-    //
-    // Helpful matching pairs:
-    //   ')' matches '('
-    //   ']' matches '['
-    //   '}' matches '{'
-    //
-    // Corner cases:
-    // - s == NULL -> return false
-    // - odd length strings can’t be valid 
-    //
-    // Note:
-    // - Input contains only bracket characters, per the prompt.
-//02/19
-    (void)s; // remove after implementing
-    return false; // placeholder
+    if (s == NULL) return true;           // usually not given, but safe
+    size_t n = strlen(s);
+    if (n == 0) return true;
+
+    // stack of opening brackets (max size = n)
+    char *st = (char *)malloc(n * sizeof(char));
+    if (!st) return false;                // out of memory → fail safely
+
+    size_t top = 0; // number of items in stack
+
+    for (size_t i = 0; i < n; i++) {
+        char c = s[i];
+
+        if (is_open(c)) {
+            st[top++] = c;                // push
+        } else {
+            // closing bracket: must have something to match
+            if (top == 0) {               // empty stack → invalid
+                free(st);
+                return false;
+            }
+            char open = st[top - 1];      // peek
+            if (!matches(open, c)) {      // wrong type/order
+                free(st);
+                return false;
+            }
+            top--;                        // pop
+        }
+    }
+
+    bool ok = (top == 0);                 // all opens matched
+    free(st);
+    return ok;
 }
