@@ -29,3 +29,8 @@ $(Q3_BIN): Question3/runner.c Question3/tests.c Question3/Student.c Question3/St
 
 clean:
 	rm -f $(Q1_BIN) $(Q2_BIN) $(Q3_BIN)
+
+
+make run1
+make run2
+make run3
