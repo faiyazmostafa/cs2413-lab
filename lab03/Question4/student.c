@@ -1,18 +1,20 @@
-// Question4/student.c
-// ------------------------------------------------------------
-// CS Lab03 - Middle Node of Linked List
-//
-// TODO:
-//   Implement middleNodeValue(head) using fast/slow pointers.
-//
-// Notes:
-// - If even length, return the second middle.
-// - Do not allocate new nodes.
-// ------------------------------------------------------------
-
-#include "Student.h"
+#include "student.h"
 
 int middleNodeValue(struct ListNode *head) {
-    // TODO: implement
+    // If the list is empty, return 0 or a default error value
+    if (head == NULL) {
+        return 0;
+    }
 
+    struct ListNode *slow = head;
+    struct ListNode *fast = head;
+
+    // Fast moves two steps, slow moves one step
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    // slow is now at the middle (or the second middle for even lengths)
+    return slow->val;
 }
