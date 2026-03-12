@@ -1,26 +1,7 @@
-/*
- * Assignment 2 / Question 2 / student.c
- * ------------------------------------------------------------
- * Check if a BST is an AVL tree
- *
- * Implement:
- *   bool isAVL(struct TreeNode* root);
- *
- * AVL (for this assignment) means:
- * 1) strict BST property (no duplicates)
- * 2) height-balanced: abs(height(left) - height(right)) <= 1 at every node
- *
- * Rules:
- * - Do NOT allocate new nodes.
- * - Do NOT modify the tree.
- * - Do NOT print anything.
- *
- * Build/Run (from Assignment2 folder):
- *   make run2
- */
-
 #include <stdbool.h>
 #include <stddef.h>
+#include <limits.h>
+#include <stdlib.h>
 
 struct TreeNode {
     int val;
@@ -28,11 +9,39 @@ struct TreeNode {
     struct TreeNode *right;
 };
 
+/**
+ * Helper function to check height, balance, and BST property in one pass.
+ * Returns the height of the tree if valid, or -1 if any property is violated.
+ */
+long long checkAVLRecursive(struct TreeNode* node, long long min, long long max) {
+    if (node == NULL) {
+        return 0; // Height of NULL is 0 
+    }
+
+    // 1. Check strict BST property 
+    if (node->val <= min || node->val >= max) {
+        return -1;
+    }
+
+    // 2. Recursively check left subtree
+    long long leftHeight = checkAVLRecursive(node->left, min, node->val);
+    if (leftHeight == -1) return -1;
+
+    // 3. Recursively check right subtree
+    long long rightHeight = checkAVLRecursive(node->right, node->val, max);
+    if (rightHeight == -1) return -1;
+
+    // 4. Check height-balanced property: abs(h1 - h2) <= 1 
+    long long diff = leftHeight - rightHeight;
+    if (diff < -1 || diff > 1) {
+        return -1;
+    }
+
+    // 5. Return actual height: 1 + max(leftHeight, rightHeight) 
+    return (leftHeight > rightHeight ? leftHeight : rightHeight) + 1;
+}
+
 bool isAVL(struct TreeNode* root) {
-    // TODO: implement
-    // Hint: One common O(n) approach:
-    // - Use a recursive helper that returns the subtree height,
-    //   and returns -1 if subtree is invalid (BST violation or unbalanced).
-    (void)root;
-    return false;
+    // Use long long for bounds to handle INT_MIN/INT_MAX 
+    return checkAVLRecursive(root, (long long)INT_MIN - 1, (long long)INT_MAX + 1) != -1;
 }

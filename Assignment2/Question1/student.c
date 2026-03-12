@@ -1,21 +1,3 @@
-/*
- * Assignment 2 / Question 1 / student.c
- * ------------------------------------------------------------
- * Search in a Binary Search Tree (BST)
- *
- * Implement:
- *   struct TreeNode* bstSearch(struct TreeNode* root, int target);
- *
- * Rules:
- * - Return a pointer to the node with value == target, else NULL.
- * - Do NOT allocate new nodes.
- * - Do NOT modify the tree.
- * - Do NOT print anything.
- *
- * Build/Run (from Assignment2 folder):
- *   make run1
- */
-
 #include <stddef.h>  // NULL
 
 struct TreeNode {
@@ -24,10 +6,22 @@ struct TreeNode {
     struct TreeNode *right;
 };
 
+/**
+ * Search in a Binary Search Tree (BST)
+ * Time Complexity: O(h), where h is the tree height.
+ * Space Complexity: O(1) for iterative or O(h) for recursive.
+ */
 struct TreeNode* bstSearch(struct TreeNode* root, int target) {
-    // TODO: implement
-    // Hint: Use the BST property to decide whether to go left or right.
-    (void)root;
-    (void)target;
-    return NULL;
+    // Base case: root is null (not found) or root matches target (found)
+    if (root == NULL || root->val == target) {
+        return root;
+    }
+
+    // If target is smaller than current node, search the left subtree
+    if (target < root->val) {
+        return bstSearch(root->left, target);
+    }
+
+    // If target is larger than current node, search the right subtree
+    return bstSearch(root->right, target);
 }
