@@ -1,42 +1,35 @@
-#include <stdbool.h>
+#include <stdio.h>
 
 /*
-Question 1: Bubble Sort
-
-Description:
-Implement two versions of bubble sort for an integer array.
-
-1. bubbleSort:
-   Implement the basic bubble sort algorithm.
-   Repeatedly compare adjacent elements and swap them if they are
-   in the wrong order. After each pass, the largest unsorted element
-   should move to its correct position.
-
-2. bubbleSortOptimized:
-   Implement an improved version of bubble sort.
-   This version should stop early if a full pass completes without
-   any swaps, which means the array is already sorted.
-
-Both functions should sort the array in ascending order.
-
-Example:
-Input:  [5, 1, 4, 2, 8]
-Output: [1, 2, 4, 5, 8]
-
-Notes:
-- If the array is empty or has only one element, do nothing.
-- You may write a helper function such as swap(...) if you want.
+Question 1: Longest Common Prefix
 */
 
-void bubbleSort(int arr[], int size) {
-    // TODO: implement basic bubble sort
-    (void)arr;
-    (void)size;
-}
+char* longestCommonPrefix(char** strs, int strsSize) {
+    // 1. If the input array is empty, return an empty string
+    if (strsSize == 0) {
+        return "";
+    }
 
-void bubbleSortOptimized(int arr[], int size) {
-    // TODO: implement optimized bubble sort with early stopping
-    (void)arr;
-    (void)size;
-}
+    // 2. Iterate through each string in the array starting from the second one
+    for (int i = 1; i < strsSize; i++) {
+        int j = 0;
+        
+        // 3. Compare characters of strs[0] with strs[i] 
+        // until they differ or we hit the end of either string
+        while (strs[0][j] != '\0' && strs[i][j] != '\0' && strs[0][j] == strs[i][j]) {
+            j++;
+        }
 
+        // 4. Truncate strs[0] at the first point of divergence
+        // This updates our "current prefix" for the next iteration
+        strs[0][j] = '\0';
+
+        // 5. Optimization: If the prefix becomes empty, we can stop early
+        if (strs[0][0] == '\0') {
+            return strs[0];
+        }
+    }
+
+    // 6. Return the modified first string
+    return strs[0];
+}
